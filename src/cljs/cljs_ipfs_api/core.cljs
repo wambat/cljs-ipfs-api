@@ -11,7 +11,7 @@
             ))
 
 (defn mtest []
-  "Test")
+  (new IpfsAPI "/ip4/127.0.0.1/tcp/5001"))
 
 (defn init []
   (info "INIT"))

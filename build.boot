@@ -1,7 +1,7 @@
 (set-env!
  :source-paths    #{"src/cljs"}
  ;;:resource-paths  #{"resources"}
- :npm-deps {}
+ ;; :npm-deps {}
  :dependencies '[[org.clojure/clojure "1.9.0-alpha17"]
 
                  ;;ENV
@@ -49,13 +49,13 @@
 (deftask npm-deps
   "Install npm deps to node_modules."
   []
-  (npm/npm :install ["interface-ipfs-core@latest"]
+  (npm/npm :install ["ipfs-api@latest"]
            :cache-key ::cache))
 
 (deftask cljs-env []
   (task-options! cljs {:compiler-options {:target :nodejs
                                           :install-deps true
-                                          :npm-deps {:interface-ipfs-core "0.52.0"}}})
+                                          :npm-deps {:ipfs-api "18.1.1"}}})
   identity)
 
 (deftask build []
