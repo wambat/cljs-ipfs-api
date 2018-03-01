@@ -19,14 +19,14 @@
                  ;;DEV
                  [doo "0.1.8" :scope "test"]
                  [samestep/boot-refresh "0.1.0" :scope "test"]
-                 [adzerk/boot-cljs          "2.1.4"  :scope "test"]
+                 [adzerk/boot-cljs          "2.1.4"  :scope "test"];;:exclusions [org.clojure/clojurescript]
                  [adzerk/boot-cljs-repl     "0.3.3"      :scope "test"]
                  [adzerk/boot-reload        "0.5.2"      :scope "test"]
                  ;; [pandeiro/boot-http        "0.8.3"      :scope "test"]
                  [com.cemerick/piggieback   "0.2.1"      :scope "test"]
                  [org.clojure/tools.nrepl   "0.2.12"     :scope "test"]
                  [weasel                    "0.7.0"      :scope "test"]
-                 [crisptrutski/boot-cljs-test "0.3.0" :scope "test"]
+                 [crisptrutski/boot-cljs-test "0.3.5-SNAPSHOT" :scope "test"]
                  ;; [org.martinklepsch/boot-garden "1.3.2-0" :scope "test"]
                  [binaryage/dirac "1.1.3" :scope "test"]
                  [powerlaces/boot-cljs-devtools "0.2.0" :scope "test"]
@@ -53,15 +53,16 @@
            :cache-key ::cache))
 
 (deftask cljs-env []
-  (task-options! cljs {:install-deps true
-                       :npm-deps {:interface-ipfs-core "0.52.0"}})
+  (task-options! cljs {:compiler-options {:target :nodejs
+                                          :install-deps true
+                                          :npm-deps {:interface-ipfs-core "0.52.0"}}})
   identity)
 
 (deftask build []
   (comp (speak)
-     (npm-deps)
-     (cljs {:install-deps true
-            :npm-deps {:interface-ipfs-core "0.52.0"}})))
+     ;; (npm-deps)
+     (cljs-env)
+     (cljs)))
 
 (deftask run []
   (comp
