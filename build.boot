@@ -15,6 +15,7 @@
                  ;; [org.clojure/core.memoize "0.5.6" :exclusions [org.clojure/core.cache]]
                  ;;CLJS
                  [org.clojure/clojurescript "1.9.946"]
+                 [cljs-node-io "0.5.0"]
 
                  ;;DEV
                  [doo "0.1.8" :scope "test"]

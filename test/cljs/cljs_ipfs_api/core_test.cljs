@@ -1,7 +1,8 @@
 (ns cljs-ipfs-api.core-test
-  (:require-macros [cljs.test :refer [deftest testing is]])
+  (:require-macros [cljs.test :refer [deftest testing is async]])
   (:require [cljs.test :as t]
             [cljs-ipfs-api.core :as core]))
 
-(deftest test-test []
-  (is (= (core/mtest) "Test")))
+#_(deftest test-test []
+  (async done
+         (is (= (core/mtest done) "Test"))))
