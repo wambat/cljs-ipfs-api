@@ -3,6 +3,8 @@
   (:require [cljs.test :as t]
             [cljs-ipfs-api.core :as core]))
 
-#_(deftest test-test []
-  (async done
-         (is (= (core/mtest done) "Test"))))
+(deftest defnils-test []
+  (is (= (core/nil-patched-defns 'test ['data ['options] ['callback] ['quack] 'mordata]) nil)))
+
+(deftest defsignature-test []
+  (is (= (core/defsignature (first core/signatures)) '(defn add))))

@@ -16,7 +16,8 @@
   (async done
          (let [fs (js/require "fs")
                ipfs (core/->ipfs)
-               file (.createReadStream fs "/home/wambat/work/district0x/cljs-ipfs/test/resources/testfile.jpg")]
-           (is (= (files/add ipfs file nil (fn [err files]
-                                             (info ["DONE" err files])
-                                             (done))))))))
+               file (.createReadStream fs "/home/wambat/work/district0x/cljs-ipfs-api/test/resources/testfile.jpg")]
+           (files/add ipfs file nil (fn [err files]
+                                      (is (= err nil))
+                                      (info ["DONE" err files])
+                                      (done))))))
