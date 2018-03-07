@@ -1,11 +1,6 @@
 (ns cljs-ipfs-api.core
   (:require [clojure.string :as string]))
 
-(def signatures
-  [['add
-    'files.add
-    ['data ['options] ['callback]]]])
-
 (defn to-no-ns-sym [s]
   (map (comp symbol name) s))
 
@@ -20,7 +15,7 @@
                                             (to-no-ns-sym oargs-after)))))
          patched-args)))
 
-(defmacro defsignature [[f-name r-name f-params]]
+(defn defsignature [[f-name r-name f-params]]
   (let [nil-patched-param-defs (nil-patched-defns f-name f-params)
         api-call (string/split (str r-name) #"\.")
         api-root (if (> (count api-call) 1)
@@ -31,8 +26,16 @@
        ([~'ipfs-inst ~@(to-no-ns-sym (flatten f-params))]
         (. ~api-root (~(symbol (last api-call)) ~@(to-no-ns-sym (flatten f-params))))))))
 
+(defmacro defsignatures [sigs]
+  (let [defs (map defsignature sigs)]
+    `(do
+       ~@defs)))
+
 (comment
 
-  (macroexpand `(defsignature [add files.add [data [options] [callback]]]))
+  (defsignature '[add files.add [data [options] [callback]]])
+
+  (macroexpand '(defsignatures [[add files.add [data [options] [callback]]]
+                                [addReadableStream files.addReadableStream [data [options] [callback]]]]))
 
   )

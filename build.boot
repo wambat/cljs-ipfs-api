@@ -1,5 +1,5 @@
 (set-env!
- :source-paths    #{"src/cljs"}
+ :source-paths    #{"src/clj" "src/cljs"}
  ;;:resource-paths  #{"resources"}
  ;; :npm-deps {}
  :dependencies '[[org.clojure/clojure "1.9.0-alpha17"]
@@ -68,11 +68,8 @@
 (deftask run []
   (comp
    (watch)
-   (refresh)
    (cljs-repl)
-   ;; (reload)
-   ;; (build)
-   ))
+   (build)))
 
 
 (deftask production []

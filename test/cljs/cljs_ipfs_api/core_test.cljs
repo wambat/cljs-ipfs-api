@@ -1,10 +1,22 @@
 (ns cljs-ipfs-api.core-test
-  (:require-macros [cljs.test :refer [deftest testing is async]])
-  (:require [cljs.test :as t]
+  (:require
+   [cljs.test :refer [deftest testing is async]]
+   [cljs.test :as t]
+            [taoensso.timbre :as timbre :refer-macros [log
+                                                       trace
+                                                       debug
+                                                       info
+                                                       warn
+                                                       error
+                                                       fatal
+                                                       report]]
             [cljs-ipfs-api.core :as core]))
 
 (deftest defnils-test []
-  (is (= (core/nil-patched-defns 'test ['data ['options] ['callback] ['quack] 'mordata]) nil)))
+  ;; (is (= (core/nil-patched-defns 'test ['data ['options] ['callback] ['quack] 'mordata]) nil))
+  )
 
 (deftest defsignature-test []
-  (is (= (core/defsignature (first core/signatures)) '(defn add))))
+  ;;(info (macroexpand '(core/defsignature [add files.add [data [options] [callback] [mordata]]])))
+  ;;(is (= (macroexpand '(core/defsignature [add files.add [data [options] [callback] [mordata]]])) nil))
+  )
