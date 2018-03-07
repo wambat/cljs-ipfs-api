@@ -20,6 +20,7 @@
 
                  ;;DEV
                  [doo "0.1.8" :scope "test"]
+                 [adzerk/bootlaces    "0.1.13" :scope "test"]
                  [samestep/boot-refresh "0.1.0" :scope "test"]
                  [adzerk/boot-cljs          "2.1.4"  :scope "test"];;:exclusions [org.clojure/clojurescript]
                  [adzerk/boot-cljs-repl     "0.3.3"      :scope "test"]
@@ -36,7 +37,7 @@
                  [degree9/boot-npm "1.9.0" :scope "test"]
                  ])
 
-(def +version+ "0.0.1-SNAPSHOT")
+(def +version+ "0.0.5-SNAPSHOT")
 
 (require
  '[samestep.boot-refresh :refer [refresh]]
@@ -48,8 +49,11 @@
  ;; '[org.martinklepsch.boot-garden :refer [garden]]
  '[powerlaces.boot-cljs-devtools :refer [cljs-devtools dirac]]
  '[degree9.boot-npm :as npm]
+ '[boot.git :refer [last-commit]]
+ '[adzerk.bootlaces :refer :all]
  )
 
+(bootlaces! +version+ :dont-modify-paths? true)
 (deftask npm-deps
   "Install npm deps to node_modules."
   []
@@ -117,20 +121,23 @@
                 )))
 
 (task-options!
- pom  {:project     'district0x/cljs-ipfs-api
+ push {:repo           "deploy"
+       :ensure-branch  "master"
+       :ensure-clean   true
+       :ensure-tag     (last-commit)
+       :ensure-version +version+}
+ pom  {:project     'cljs-ipfs-api
        :version     +version+
        :description "ClojureScript wrapper over js-ipfs-api."
        :url         "https://github.com/district0x/cljs-ipfs-api"
        :scm         {:url "https://github.com/district0x/cljs-ipfs-api"}
        :license     {"EPL" "http://www.eclipse.org/legal/epl-v10.html"}})
 
-(deftask uberjar []
+(deftask package []
   (comp
-   (pom)
-   (jar)
-   (install)))
+   (production)
+   (build)
+   (build-jar)))
 
-(deftask deploy []
-  (comp
-   (uberjar)
-   (push :repo "clojars" :gpg-sign (not (.endsWith +version+ "-SNAPSHOT")))))
+(task-options!
+ )
