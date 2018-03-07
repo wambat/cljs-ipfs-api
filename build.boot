@@ -36,6 +36,8 @@
                  [degree9/boot-npm "1.9.0" :scope "test"]
                  ])
 
+(def +version+ "0.0.1-SNAPSHOT")
+
 (require
  '[samestep.boot-refresh :refer [refresh]]
  '[adzerk.boot-cljs      :refer [cljs]]
@@ -113,3 +115,22 @@
      (cljs-env)
      (test-cljs :js-env :node;;:phantom
                 )))
+
+(task-options!
+ pom  {:project     'district0x/cljs-ipfs-api
+       :version     +version+
+       :description "ClojureScript wrapper over js-ipfs-api."
+       :url         "https://github.com/district0x/cljs-ipfs-api"
+       :scm         {:url "https://github.com/district0x/cljs-ipfs-api"}
+       :license     {"EPL" "http://www.eclipse.org/legal/epl-v10.html"}})
+
+(deftask uberjar []
+  (comp
+   (pom)
+   (jar)
+   (install)))
+
+(deftask deploy []
+  (comp
+   (uberjar)
+   (push :repo "clojars" :gpg-sign (not (.endsWith +version+ "-SNAPSHOT")))))

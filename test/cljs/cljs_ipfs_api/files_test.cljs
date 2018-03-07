@@ -14,10 +14,10 @@
 
 (deftest add-test []
   (async done
+         (core/init-ipfs "/ip4/127.0.0.1/tcp/5001")
          (let [fs (js/require "fs")
-               ipfs (core/->ipfs)
                file (.createReadStream fs "/home/wambat/work/district0x/cljs-ipfs-api/test/resources/testfile.jpg")]
-           (files/add ipfs file nil (fn [err files]
-                                      (is (= err nil))
-                                      (info ["DONE" err files])
-                                      (done))))))
+           (files/add file nil (fn [err files]
+                                 (is (= err nil))
+                                 (info ["DONE" err files])
+                                 (done))))))
