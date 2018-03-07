@@ -1,5 +1,6 @@
 (ns cljs-ipfs-api.core
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [camel-snake-kebab.core :refer :all]))
 
 (defn to-no-ns-sym [s]
   (map (comp symbol name) s))
@@ -15,9 +16,12 @@
                                             (to-no-ns-sym oargs-after)))))
          patched-args)))
 
-(defn defsignature [[f-name r-name f-params]]
-  (let [nil-patched-param-defs (nil-patched-defns f-name f-params)
-        api-call (string/split (str r-name) #"\.")
+(defn defsignature [[r-name f-params f-name ]]
+  (let [api-call (string/split (str r-name) #"\.")
+        f-name (if-not f-name
+                 (->kebab-case (last api-call))
+                 f-name)
+        nil-patched-param-defs (nil-patched-defns f-name f-params)
         api-root (if (> (count api-call) 1)
                    `(aget ~'ipfs-inst ~(first api-call))
                    `~'ipfs-inst)]
@@ -35,7 +39,7 @@
 
   (defsignature '[add files.add [data [options] [callback]]])
 
-  (macroexpand '(defsignatures [[add files.add [data [options] [callback]]]
-                                [addReadableStream files.addReadableStream [data [options] [callback]]]]))
+  (macroexpand '(defsignatures [[files.add [data [options] [callback]]]
+                                [files.addReadableStream [data [options] [callback]]]]))
 
   )

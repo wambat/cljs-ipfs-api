@@ -10,6 +10,7 @@
                  ;; [org.clojure/core.async "0.3.443"]
 
                  ;;DATA
+                 [camel-snake-kebab "0.4.0"]
                  ;; [com.taoensso/encore "2.91.0"]
                  ;; [org.clojure/core.cache "0.6.3"]
                  ;; [org.clojure/core.memoize "0.5.6" :exclusions [org.clojure/core.cache]]
