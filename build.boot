@@ -1,5 +1,5 @@
 (set-env!
- :source-paths    #{"src/clj" "src/cljs"}
+ :source-paths    #{"src"}
  ;;:resource-paths  #{"resources"}
  ;; :npm-deps {}
  :dependencies '[[org.clojure/clojure "1.9.0-alpha17"]
@@ -17,6 +17,7 @@
                  ;;CLJS
                  [org.clojure/clojurescript "1.9.946"]
                  [cljs-node-io "0.5.0"]
+                 [cljsjs/ipfs-api "18.1.1-0"]
 
                  ;;DEV
                  [doo "0.1.8" :scope "test"]
@@ -34,10 +35,10 @@
                  [binaryage/dirac "1.1.3" :scope "test"]
                  [powerlaces/boot-cljs-devtools "0.2.0" :scope "test"]
                  [binaryage/devtools "0.9.4"]
-                 [degree9/boot-npm "1.9.0" :scope "test"]
+                 ;; [degree9/boot-npm "1.9.0" :scope "test"]
                  ])
 
-(def +version+ "0.0.5-SNAPSHOT")
+(def +version+ "0.0.7-SNAPSHOT")
 
 (require
  '[samestep.boot-refresh :refer [refresh]]
@@ -48,22 +49,24 @@
  '[crisptrutski.boot-cljs-test :refer [test-cljs]]
  ;; '[org.martinklepsch.boot-garden :refer [garden]]
  '[powerlaces.boot-cljs-devtools :refer [cljs-devtools dirac]]
- '[degree9.boot-npm :as npm]
+ ;; '[degree9.boot-npm :as npm]
  '[boot.git :refer [last-commit]]
  '[adzerk.bootlaces :refer :all]
  )
 
-(bootlaces! +version+ :dont-modify-paths? true)
-(deftask npm-deps
-  "Install npm deps to node_modules."
-  []
-  (npm/npm :install ["ipfs-api@latest"]
-           :cache-key ::cache))
+(bootlaces! +version+ ;;:dont-modify-paths? true
+            )
+;; (deftask npm-deps
+;;   "Install npm deps to node_modules."
+;;   []
+;;   (npm/npm :install ["ipfs-api@latest"]
+;;            :cache-key ::cache))
 
 (deftask cljs-env []
   (task-options! cljs {:compiler-options {:target :nodejs
-                                          :install-deps true
-                                          :npm-deps {:ipfs-api "18.1.1"}}})
+                                          ;; :install-deps true
+                                          ;; :npm-deps {:ipfs-api "18.1.1"}
+                                          }})
   identity)
 
 (deftask build []
@@ -136,7 +139,7 @@
 (deftask package []
   (comp
    (production)
-   (build)
+   (cljs :compiler-options {:target :nodejs})
    (build-jar)))
 
 (task-options!
