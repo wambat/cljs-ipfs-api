@@ -1,0 +1,15 @@
+(ns cljs-ipfs-api.dag
+  (:require [taoensso.timbre :as timbre :refer-macros [log
+                                                       trace
+                                                       debug
+                                                       info
+                                                       warn
+                                                       error
+                                                       fatal
+                                                       report]]
+            [cljs-ipfs-api.core :refer-macros [defsignatures]]))
+
+(defsignatures
+  [[dag.put [dagNode options callback]]
+   [dag.get [cid [path] [options] callback]]
+   [dag.tree [cid [path] [options] callback]]])
