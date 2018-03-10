@@ -23,11 +23,15 @@
                  f-name)
         nil-patched-param-defs (nil-patched-defns f-name f-params)
         api-root (if (> (count api-call) 1)
-                   `(aget ~'@cljs-ipfs-api.core/*ipfs-instance* ~(first api-call))
-                   `~'@cljs-ipfs-api.core/*ipfs-instance*)]
+                   `(aget ~'ipfs-inst ~(first api-call))
+                   `~'ipfs-inst)]
     `(defn ~(symbol (name f-name))
        ~@nil-patched-param-defs
        ([~@(to-no-ns-sym (flatten f-params))]
+        (~(symbol (name f-name))
+         ~'@cljs-ipfs-api.core/*ipfs-instance*
+         ~@(to-no-ns-sym (flatten f-params))))
+       ([~'ipfs-inst ~@(to-no-ns-sym (flatten f-params))]
         (. ~api-root (~(symbol (last api-call)) ~@(to-no-ns-sym (flatten f-params))))))))
 
 (defmacro defsignatures [sigs]
@@ -41,4 +45,6 @@
 
   (macroexpand '(defsignatures [[files.add [data [options] [callback]]]
                                 [files.addReadableStream [data [options] [callback]]]]))
+
+  (macroexpand '(defsignatures [[files.add [data [options] [callback]]]]))
   )
