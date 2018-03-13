@@ -32,7 +32,14 @@
          ~'@cljs-ipfs-api.core/*ipfs-instance*
          ~@(to-no-ns-sym (flatten f-params))))
        ([~'ipfs-inst ~@(to-no-ns-sym (flatten f-params))]
-        (. ~api-root (~(symbol (last api-call)) ~@(to-no-ns-sym (flatten f-params))))))))
+        ~(if (contains? (into #{}
+                                (flatten f-params))
+                          'callback)
+           `(if (instance? ~'cljs.core.async.impl.channels/ManyToManyChannel ~'callback)
+              (letfn [(~'callback [~'err ~'res] (~'go (~'>! ~'callback [~'err ~'res])))]
+                (. ~api-root (~(symbol (last api-call)) ~@(to-no-ns-sym (flatten f-params)))))
+              (. ~api-root (~(symbol (last api-call)) ~@(to-no-ns-sym (flatten f-params)))))
+           `(. ~api-root (~(symbol (last api-call)) ~@(to-no-ns-sym (flatten f-params)))))))))
 
 (defmacro defsignatures [sigs]
   (let [defs (map defsignature sigs)]
@@ -46,5 +53,7 @@
   (macroexpand '(defsignatures [[files.add [data [options] [callback]]]
                                 [files.addReadableStream [data [options] [callback]]]]))
 
-  (macroexpand '(defsignatures [[files.add [data [options] [callback]]]]))
+  (macroexpand '(defsignatures [[files.add [data [options] [callback]]]
+                                [files.addo [data [ooptions] [callback]]]]))
+
   )

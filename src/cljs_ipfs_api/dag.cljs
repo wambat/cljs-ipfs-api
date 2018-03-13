@@ -7,7 +7,9 @@
                                                        error
                                                        fatal
                                                        report]]
-            [cljs-ipfs-api.core :refer-macros [defsignatures]]))
+            [cljs.core.async :refer [>! chan]]
+            [cljs-ipfs-api.core :refer-macros [defsignatures]])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defsignatures
   [[dag.put [dagNode options callback]]
