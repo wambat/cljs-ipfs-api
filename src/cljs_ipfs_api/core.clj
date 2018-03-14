@@ -35,9 +35,7 @@
         ~(if (contains? (into #{}
                                 (flatten f-params))
                           'callback)
-           `(if (instance? ~'cljs.core.async.impl.channels/ManyToManyChannel ~'callback)
-              (letfn [(~'callback [~'err ~'res] (~'go (~'>! ~'callback [~'err ~'res])))]
-                (. ~api-root (~(symbol (last api-call)) ~@(to-no-ns-sym (flatten f-params)))))
+           `(let [~'callback (~'wrap-callback ~'callback)]
               (. ~api-root (~(symbol (last api-call)) ~@(to-no-ns-sym (flatten f-params)))))
            `(. ~api-root (~(symbol (last api-call)) ~@(to-no-ns-sym (flatten f-params)))))))))
 

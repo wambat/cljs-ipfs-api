@@ -7,9 +7,8 @@
                                                        error
                                                        fatal
                                                        report]]
-            [cljs.core.async :refer [>! chan]]
-            [cljs-ipfs-api.core :refer-macros [defsignatures]])
-  (:require-macros [cljs.core.async.macros :refer [go]]))
+            [cljs-ipfs-api.core :refer-macros [defsignatures]]
+            [cljs-ipfs-api.utils :refer [wrap-callback]]))
 
 (defsignatures
   [[repo.gc [[options] [callback]]]

@@ -50,7 +50,7 @@
 (defn js-prototype-apply [js-obj method-name args]
   (js-apply (aget js-obj "prototype") method-name args))
 
-(defn prop-or-clb-fn
+#_(defn prop-or-clb-fn
   "Constructor to create an fn to get properties or to get properties and apply a
   callback fn."
   [& ks]
@@ -61,7 +61,7 @@
                 args)
       (js->cljkk (apply aget web3 ks)))))
 
-(defn create-async-fn [f]
+#_(defn create-async-fn [f]
   (fn [& args]
     (let [[ch args] (if (instance? cljs.core.async.impl.channels/ManyToManyChannel (first args))
                       [(first args) (rest args)]
@@ -69,3 +69,12 @@
       (apply f (concat args [(fn [err res]
                                (go (>! ch [err res])))]))
       ch)))
+
+(defn wrap-callback [f-n]
+  (let [callback (fn callback [err res]
+                   (if (instance? cljs.core.async.impl.channels/ManyToManyChannel f-n)
+                     (go (>! f-n [(js->cljkk err)
+                                  (js->cljkk res)]))
+                     (f-n (js->cljkk err)
+                          (js->cljkk res))))]
+    callback))
