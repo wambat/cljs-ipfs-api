@@ -18,8 +18,7 @@
    [object.data [multihash [options] [callback]]]
    [object.links [multihash [options] [callback]]]
    [object.stat [multihash [options] [callback]]]
-   ;; [object.patch.addLink [multihash DAGLink [options callback]]]
-   ;; [object.patch.rmLink [multihash DAGLink [options callback]]]
-   ;; [object.patch.appendData [multihash data [options callback]]]
-   ;; [object.patch.setData [multihash data [options callback]]]
-   ])
+   [object.patch.addLink [multihash DAGLink [options callback]] patch-add-link]
+   [object.patch.rmLink [multihash DAGLink [options callback]] patch-rm-link]
+   [object.patch.appendData [multihash data [options callback]] patch-append-data]
+   [object.patch.setData [multihash data [options callback]] patch-set-data]])

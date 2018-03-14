@@ -5,7 +5,7 @@
  :dependencies '[[org.clojure/clojure "1.9.0-alpha17"]
 
                  ;;ENV
-                 [com.taoensso/timbre "4.10.0"] 
+                 [com.taoensso/timbre "4.10.0"]
                  ;; [mount "0.1.11"]
                  ;; [org.clojure/core.async "0.3.443"]
 
@@ -38,7 +38,7 @@
                  ;; [degree9/boot-npm "1.9.0" :scope "test"]
                  ])
 
-(def +version+ "0.0.7-SNAPSHOT")
+(def +version+ "0.0.8-SNAPSHOT")
 
 (require
  '[samestep.boot-refresh :refer [refresh]]

@@ -23,7 +23,7 @@
                  f-name)
         nil-patched-param-defs (nil-patched-defns f-name f-params)
         api-root (if (> (count api-call) 1)
-                   `(aget ~'ipfs-inst ~(first api-call))
+                   `(aget ~'ipfs-inst ~@(butlast api-call))
                    `~'ipfs-inst)]
     `(defn ~(symbol (name f-name))
        ~@nil-patched-param-defs
@@ -53,7 +53,6 @@
   (macroexpand '(defsignatures [[files.add [data [options] [callback]]]
                                 [files.addReadableStream [data [options] [callback]]]]))
 
-  (macroexpand '(defsignatures [[files.add [data [options] [callback]]]
-                                [files.addo [data [ooptions] [callback]]]]))
+  (macroexpand '(defsignatures [[object.patch.addLink [multihash DAGLink [options callback]]]]))
 
   )
