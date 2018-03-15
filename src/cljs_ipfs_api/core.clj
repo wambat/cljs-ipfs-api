@@ -16,6 +16,12 @@
                                                 (to-no-ns-sym oargs-after)))))
          patched-args)))
 
+(defn jsify-args [args]
+  (map (fn [arg]
+         (if (= arg 'callback)
+           arg
+           `(~'cljkk->js ~arg))) args))
+
 (defn defsignature [[r-name f-params f-name ]]
   (let [api-call (string/split (str r-name) #"\.")
         f-name (if-not f-name
@@ -24,7 +30,9 @@
         nil-patched-param-defs (nil-patched-defns f-name f-params)
         api-root (if (> (count api-call) 1)
                    `(aget ~'ipfs-inst ~@(butlast api-call))
-                   `~'ipfs-inst)]
+                   `~'ipfs-inst)
+        call `(. ~api-root (~(symbol (last api-call)) ~@(jsify-args (to-no-ns-sym (flatten f-params)))))
+        ]
     `(defn ~(symbol (name f-name))
        ~@nil-patched-param-defs
        ([~@(to-no-ns-sym (flatten f-params))]
@@ -36,8 +44,8 @@
                                 (flatten f-params))
                           'callback)
            `(let [~'callback (~'wrap-callback ~'callback)]
-              (. ~api-root (~(symbol (last api-call)) ~@(to-no-ns-sym (flatten f-params)))))
-           `(. ~api-root (~(symbol (last api-call)) ~@(to-no-ns-sym (flatten f-params)))))))))
+              ~call)
+           call)))))
 
 (defmacro defsignatures [sigs]
   (let [defs (map defsignature sigs)]
