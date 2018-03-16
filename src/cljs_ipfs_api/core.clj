@@ -31,7 +31,8 @@
         api-root (if (> (count api-call) 1)
                    `(aget ~'ipfs-inst ~@(butlast api-call))
                    `~'ipfs-inst)
-        call `(. ~api-root (~(symbol (last api-call)) ~@(jsify-args (to-no-ns-sym (flatten f-params)))))
+        call `(let [~'args (remove nil? [~@(to-no-ns-sym (flatten f-params))])]
+                (js-apply ~api-root ~'args))
         ]
     `(defn ~(symbol (name f-name))
        ~@nil-patched-param-defs
@@ -59,6 +60,27 @@
   (macroexpand '(defsignatures [[files.add [data [options] [callback]]]
                                 [files.addReadableStream [data [options] [callback]]]]))
 
-  (macroexpand '(defsignatures [[object.patch.addLink [multihash DAGLink [options callback]]]]))
+  (macroexpand '(defsignatures [[object.patch.addLink [multihash DAGLink [options] [callback]]]]))
+  (do
+    (clojure.core/defn add-link
+      ([multihash DAGLink]
+       (add-link multihash
+                 DAGLink
+                 nil))
+      ([multihash DAGLink callback]
+       (add-link multihash
+                 DAGLink
+                 nil
+                 callback))
+      ([multihash DAGLink options callback]
+       (add-link (clojure.core/deref cljs-ipfs-api.core/*ipfs-instance*)
+                 multihash DAGLink options callback))
+      ([ipfs-inst multihash DAGLink options callback]
+       (clojure.core/let [callback (wrap-callback callback)]
+         (. (clojure.core/aget ipfs-inst "object" "patch")
+            (addLink (cljkk->js multihash)
+                     (cljkk->js DAGLink)
+                     (cljkk->js options)
+                     callback))))))
 
   )

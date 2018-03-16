@@ -75,6 +75,8 @@
                    (if (instance? cljs.core.async.impl.channels/ManyToManyChannel f-n)
                      (go (>! f-n [(js->cljkk err)
                                   (js->cljkk res)]))
-                     (f-n (js->cljkk err)
-                          (js->cljkk res))))]
+                     (if (fn? f-n)
+                       (f-n (js->cljkk err)
+                            (js->cljkk res))
+                       f-n)))]
     callback))
