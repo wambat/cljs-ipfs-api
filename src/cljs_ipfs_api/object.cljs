@@ -1,4 +1,4 @@
-(ns cljs-ipfs-api.dag
+(ns cljs-ipfs-api.object
   (:require [taoensso.timbre :as timbre :refer-macros [log
                                                        trace
                                                        debug

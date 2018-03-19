@@ -42,10 +42,9 @@
   ([this method-name]
    (js-apply this method-name nil))
   ([this method-name args]
-   (let [method-name (camel-case (name method-name))]
-     (if (aget this method-name)
-       (js->cljkk (apply js-invoke this method-name (args-cljkk->js args)))
-       (throw (str "Method: " method-name " was not found in object."))))))
+   (if (aget this method-name)
+     (js->cljkk (apply js-invoke this method-name (args-cljkk->js args)))
+     (throw (str "Method: " method-name " was not found in object.")))))
 
 (defn js-prototype-apply [js-obj method-name args]
   (js-apply (aget js-obj "prototype") method-name args))
