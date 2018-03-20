@@ -24,15 +24,16 @@
 
 (defn defsignature [[r-name f-params f-name ]]
   (let [api-call (string/split (str r-name) #"\.")
+        orig-f-name (last api-call)
         f-name (if-not f-name
-                 (->kebab-case (last api-call))
+                 (->kebab-case orig-f-name)
                  f-name)
         nil-patched-param-defs (nil-patched-defns f-name f-params)
         api-root (if (> (count api-call) 1)
                    `(aget ~'ipfs-inst ~@(butlast api-call))
                    `~'ipfs-inst)
         call `(let [~'args (remove nil? [~@(to-no-ns-sym (flatten f-params))])]
-                (~'js-apply ~api-root ~f-name ~'args))
+                (~'js-apply ~api-root ~orig-f-name ~'args))
         ]
     `(defn ~(symbol (name f-name))
        ~@nil-patched-param-defs
@@ -62,11 +63,5 @@
 
   (macroexpand '(defsignatures [[object.patch.addLink [multihash DAGLink [options] [callback]]]]))
 
-  (macroexpand '(defsignatures [[files.add [data [options] [callback]]]]))
-  (do
-    (clojure.core/defn add ([data] (add data nil)) ([data callback] (add data nil callback)) ([data options callback] (add (clojure.core/deref cljs-ipfs-api.core/*ipfs-instance*) data options callback))
-      ([ipfs-inst data options callback]
-       (clojure.core/let [callback (wrap-callback callback)]
-         (clojure.core/let [args (clojure.core/remove clojure.core/nil? [data options callback])]
-           (js-apply (clojure.core/aget ipfs-inst "files") args))))))
+  (do (clojure.core/defn fls ([ipfsPath] (fls ipfsPath nil)) ([ipfsPath callback] (fls (clojure.core/deref cljs-ipfs-api.core/*ipfs-instance*) ipfsPath callback)) ([ipfs-inst ipfsPath callback] (clojure.core/let [callback (wrap-callback callback)] (clojure.core/let [args (clojure.core/remove clojure.core/nil? [ipfsPath callback])] (js-apply ipfs-inst fls args)))))) 
   )
